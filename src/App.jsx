@@ -55,7 +55,7 @@ export default function App() {
 
   return (
     <BrowserRouter>
-      <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900">
+      <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900 pb-20 md:pb-0">
         <Navbar
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}

@@ -76,18 +76,20 @@ export default function DashboardPage({ items, profiles, orders, onSaveItem, onD
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6 sm:space-y-8">
       {/* Top Bar: Pilih Simulasi Akun Kreator */}
-      <div className="rounded-2xl bg-slate-900 text-white p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="rounded-2xl bg-slate-900 text-white p-5 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <span className="text-xs font-bold uppercase tracking-wider text-indigo-400">
+          <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-indigo-400">
             Creator Workspace (CRUD Dashboard)
           </span>
-          <h1 className="text-2xl font-extrabold mt-0.5">Kelola Produk Digital & Jasa Anda</h1>
+          <h1 className="text-xl sm:text-2xl font-extrabold mt-0.5">
+            Kelola Produk Digital & Jasa Anda
+          </h1>
         </div>
 
-        <div className="flex items-center gap-3">
-          <div className="text-xs">
+        <div className="w-full sm:w-auto flex flex-col sm:flex-row items-stretch sm:items-end gap-2.5 sm:gap-3">
+          <div className="text-xs flex-1">
             <label className="block text-slate-400 mb-1">Kreator Aktif:</label>
             <select
               value={selectedCreatorId}
@@ -95,7 +97,7 @@ export default function DashboardPage({ items, profiles, orders, onSaveItem, onD
                 setSelectedCreatorId(e.target.value);
                 setEditingItem(null);
               }}
-              className="rounded-xl bg-slate-800 border border-slate-700 px-3 py-2 text-xs font-bold text-white"
+              className="w-full rounded-xl bg-slate-800 border border-slate-700 px-3 py-2.5 text-xs font-bold text-white"
             >
               {profiles.map((p) => (
                 <option key={p.id} value={p.id}>
@@ -108,7 +110,7 @@ export default function DashboardPage({ items, profiles, orders, onSaveItem, onD
           {activeCreator && (
             <Link
               to={`/creator/${activeCreator.username}`}
-              className="inline-flex items-center gap-1.5 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white hover:bg-indigo-500 transition"
+              className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white hover:bg-indigo-500 transition"
             >
               <span>Lihat Lapak Publik</span>
               <ExternalLink className="h-3.5 w-3.5" />
@@ -118,36 +120,42 @@ export default function DashboardPage({ items, profiles, orders, onSaveItem, onD
       </div>
 
       {/* Ringkasan Statistik */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="rounded-2xl border border-slate-200 bg-white p-5">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 sm:gap-4">
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5">
           <span className="text-xs font-semibold text-slate-500">Total Karya & Jasa Aktif</span>
-          <p className="text-2xl font-extrabold text-slate-900 mt-1">{creatorItems.length} Item</p>
+          <p className="text-xl sm:text-2xl font-extrabold text-slate-900 mt-1">
+            {creatorItems.length} Item
+          </p>
         </div>
-        <div className="rounded-2xl border border-slate-200 bg-white p-5">
-          <span className="text-xs font-semibold text-slate-500">Total Interaksi (Download & Klik WA)</span>
-          <p className="text-2xl font-extrabold text-indigo-600 mt-1 flex items-center gap-1.5">
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5">
+          <span className="text-xs font-semibold text-slate-500">
+            Total Interaksi (Download & Klik WA)
+          </span>
+          <p className="text-xl sm:text-2xl font-extrabold text-indigo-600 mt-1 flex items-center gap-1.5">
             <TrendingUp className="h-5 w-5" />
             {creatorItems.reduce((acc, cur) => acc + (cur.sales_or_clicks || 0), 0)} Konversi
           </p>
         </div>
-        <div className="rounded-2xl border border-slate-200 bg-white p-5">
-          <span className="text-xs font-semibold text-slate-500">Transaksi In-App Produk Digital</span>
-          <p className="text-2xl font-extrabold text-emerald-600 mt-1 flex items-center gap-1.5">
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5">
+          <span className="text-xs font-semibold text-slate-500">
+            Transaksi In-App Produk Digital
+          </span>
+          <p className="text-xl sm:text-2xl font-extrabold text-emerald-600 mt-1 flex items-center gap-1.5">
             <CheckCircle2 className="h-5 w-5" />
             {creatorOrders.length} Invoice Lunas
           </p>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8">
         {/* Form Tambah / Edit Item */}
         <div className="lg:col-span-5">
           <form
             onSubmit={handleSubmit}
-            className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm space-y-4"
+            className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm space-y-4"
           >
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h2 className="text-lg font-extrabold text-slate-900">
+              <h2 className="text-base sm:text-lg font-extrabold text-slate-900">
                 {editingItem ? 'Edit Item' : 'Tambah Produk / Jasa Baru'}
               </h2>
               {editingItem && (
@@ -169,17 +177,17 @@ export default function DashboardPage({ items, profiles, orders, onSaveItem, onD
               <label className="block text-xs font-bold uppercase text-slate-600 mb-1.5">
                 Tipe Penawaran & Alur Transaksi
               </label>
-              <div className="grid grid-cols-2 gap-2.5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 <button
                   type="button"
                   onClick={() => setForm({ ...form, item_type: 'product' })}
-                  className={`flex items-center gap-2 rounded-xl border p-3 text-xs font-bold transition ${
+                  className={`flex items-center gap-2.5 rounded-xl border p-3 text-xs font-bold transition ${
                     form.item_type === 'product'
                       ? 'border-indigo-600 bg-indigo-50 text-indigo-700'
                       : 'border-slate-200 text-slate-600'
                   }`}
                 >
-                  <ShoppingBag className="h-4 w-4" />
+                  <ShoppingBag className="h-4 w-4 flex-shrink-0" />
                   <div className="text-left">
                     <div>Produk Digital</div>
                     <div className="text-[10px] font-normal opacity-80">Checkout & Download Instan</div>
@@ -189,13 +197,13 @@ export default function DashboardPage({ items, profiles, orders, onSaveItem, onD
                 <button
                   type="button"
                   onClick={() => setForm({ ...form, item_type: 'service' })}
-                  className={`flex items-center gap-2 rounded-xl border p-3 text-xs font-bold transition ${
+                  className={`flex items-center gap-2.5 rounded-xl border p-3 text-xs font-bold transition ${
                     form.item_type === 'service'
                       ? 'border-emerald-600 bg-emerald-50 text-emerald-700'
                       : 'border-slate-200 text-slate-600'
                   }`}
                 >
-                  <MessageCircle className="h-4 w-4" />
+                  <MessageCircle className="h-4 w-4 flex-shrink-0" />
                   <div className="text-left">
                     <div>Jasa Freelance</div>
                     <div className="text-[10px] font-normal opacity-80">1-on-1 Chat via WhatsApp</div>
@@ -205,18 +213,20 @@ export default function DashboardPage({ items, profiles, orders, onSaveItem, onD
             </div>
 
             <div>
-              <label className="block text-xs font-bold uppercase text-slate-600 mb-1">Judul Item</label>
+              <label className="block text-xs font-bold uppercase text-slate-600 mb-1">
+                Judul Item
+              </label>
               <input
                 type="text"
                 required
                 value={form.title}
                 onChange={(e) => setForm({ ...form, title: e.target.value })}
                 placeholder="Contoh: Template SaaS Next.js / Jasa Buat Website"
-                className="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm"
+                className="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm"
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label className="block text-xs font-bold uppercase text-slate-600 mb-1">
                   Harga (IDR / 0 = Gratis)
@@ -227,18 +237,20 @@ export default function DashboardPage({ items, profiles, orders, onSaveItem, onD
                   required
                   value={form.price}
                   onChange={(e) => setForm({ ...form, price: e.target.value })}
-                  className="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm"
+                  className="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm"
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold uppercase text-slate-600 mb-1">Kategori</label>
+                <label className="block text-xs font-bold uppercase text-slate-600 mb-1">
+                  Kategori
+                </label>
                 <input
                   type="text"
                   required
                   value={form.category}
                   onChange={(e) => setForm({ ...form, category: e.target.value })}
                   placeholder="Source Code / Web Dev"
-                  className="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm"
+                  className="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm"
                 />
               </div>
             </div>
@@ -252,7 +264,7 @@ export default function DashboardPage({ items, profiles, orders, onSaveItem, onD
                 required
                 value={form.thumbnail_url}
                 onChange={(e) => setForm({ ...form, thumbnail_url: e.target.value })}
-                className="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm"
+                className="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base sm:text-sm"
               />
             </div>
 
@@ -271,10 +283,10 @@ export default function DashboardPage({ items, profiles, orders, onSaveItem, onD
                     required
                     value={form.download_url}
                     onChange={(e) => setForm({ ...form, download_url: e.target.value })}
-                    className="w-full rounded-lg border border-indigo-200 bg-white px-3 py-1.5 text-xs"
+                    className="w-full rounded-lg border border-indigo-200 bg-white px-3 py-2 text-base sm:text-xs"
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <div>
                     <label className="block text-[11px] font-semibold text-slate-600 mb-1">
                       Info Format & Ukuran File
@@ -284,7 +296,7 @@ export default function DashboardPage({ items, profiles, orders, onSaveItem, onD
                       value={form.file_info}
                       onChange={(e) => setForm({ ...form, file_info: e.target.value })}
                       placeholder="ZIP • 18 MB"
-                      className="w-full rounded-lg border border-indigo-200 bg-white px-3 py-1.5 text-xs"
+                      className="w-full rounded-lg border border-indigo-200 bg-white px-3 py-2 text-base sm:text-xs"
                     />
                   </div>
                   <div>
@@ -295,7 +307,7 @@ export default function DashboardPage({ items, profiles, orders, onSaveItem, onD
                       type="url"
                       value={form.demo_url}
                       onChange={(e) => setForm({ ...form, demo_url: e.target.value })}
-                      className="w-full rounded-lg border border-indigo-200 bg-white px-3 py-1.5 text-xs"
+                      className="w-full rounded-lg border border-indigo-200 bg-white px-3 py-2 text-base sm:text-xs"
                     />
                   </div>
                 </div>
@@ -303,9 +315,9 @@ export default function DashboardPage({ items, profiles, orders, onSaveItem, onD
             ) : (
               <div className="rounded-xl bg-emerald-50/60 border border-emerald-100 p-3.5 space-y-3">
                 <p className="text-xs font-bold text-emerald-800">
-                  Pengaturan Layanan Jasa 1-on-1 (Redirect ke WA: {activeCreator?.whatsapp_number})
+                  Pengaturan Layanan Jasa 1-on-1 (WA: {activeCreator?.whatsapp_number})
                 </p>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <div>
                     <label className="block text-[11px] font-semibold text-slate-600 mb-1">
                       Estimasi Pengerjaan
@@ -315,7 +327,7 @@ export default function DashboardPage({ items, profiles, orders, onSaveItem, onD
                       value={form.delivery_time}
                       onChange={(e) => setForm({ ...form, delivery_time: e.target.value })}
                       placeholder="3 - 5 Hari Kerja"
-                      className="w-full rounded-lg border border-emerald-200 bg-white px-3 py-1.5 text-xs"
+                      className="w-full rounded-lg border border-emerald-200 bg-white px-3 py-2 text-base sm:text-xs"
                     />
                   </div>
                   <div>
@@ -327,7 +339,7 @@ export default function DashboardPage({ items, profiles, orders, onSaveItem, onD
                       value={form.revision_limit}
                       onChange={(e) => setForm({ ...form, revision_limit: e.target.value })}
                       placeholder="3x Revisi"
-                      className="w-full rounded-lg border border-emerald-200 bg-white px-3 py-1.5 text-xs"
+                      className="w-full rounded-lg border border-emerald-200 bg-white px-3 py-2 text-base sm:text-xs"
                     />
                   </div>
                 </div>
@@ -343,7 +355,7 @@ export default function DashboardPage({ items, profiles, orders, onSaveItem, onD
                 required
                 value={form.description}
                 onChange={(e) => setForm({ ...form, description: e.target.value })}
-                className="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm"
+                className="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-base sm:text-sm"
               />
             </div>
 
@@ -361,7 +373,7 @@ export default function DashboardPage({ items, profiles, orders, onSaveItem, onD
 
             <button
               type="submit"
-              className="w-full flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-bold text-white hover:bg-indigo-700 transition shadow-md"
+              className="w-full flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-3.5 text-sm font-bold text-white hover:bg-indigo-700 transition shadow-md"
             >
               <Plus className="h-4 w-4" />
               {editingItem ? 'Simpan Perubahan' : 'Terbitkan ke Katalog'}
@@ -371,8 +383,8 @@ export default function DashboardPage({ items, profiles, orders, onSaveItem, onD
 
         {/* Daftar Item Milik Kreator */}
         <div className="lg:col-span-7 space-y-6">
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm space-y-4">
-            <h2 className="text-lg font-extrabold text-slate-900">
+          <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm space-y-4">
+            <h2 className="text-base sm:text-lg font-extrabold text-slate-900">
               Daftar Katalog {activeCreator?.full_name} ({creatorItems.length})
             </h2>
 
@@ -380,15 +392,18 @@ export default function DashboardPage({ items, profiles, orders, onSaveItem, onD
               {creatorItems.map((item) => {
                 const isProd = item.item_type === 'product';
                 return (
-                  <div key={item.id} className="py-4 flex items-center justify-between gap-4">
-                    <div className="flex items-center gap-3.5 min-w-0">
+                  <div
+                    key={item.id}
+                    className="py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4"
+                  >
+                    <div className="flex items-start sm:items-center gap-3.5 min-w-0">
                       <img
                         src={item.thumbnail_url}
                         alt={item.title}
                         className="h-14 w-16 rounded-xl object-cover flex-shrink-0 border border-slate-200"
                       />
-                      <div className="min-w-0">
-                        <div className="flex items-center gap-2">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex flex-wrap items-center gap-2">
                           <span
                             className={`rounded px-2 py-0.5 text-[10px] font-bold uppercase ${
                               isProd
@@ -404,30 +419,33 @@ export default function DashboardPage({ items, profiles, orders, onSaveItem, onD
                         </div>
                         <Link
                           to={`/item/${item.id}`}
-                          className="font-bold text-sm text-slate-900 hover:text-indigo-600 truncate block mt-0.5"
+                          className="font-bold text-sm text-slate-900 hover:text-indigo-600 line-clamp-1 block mt-0.5"
                         >
                           {item.title}
                         </Link>
                         <p className="text-xs text-slate-400">
-                          {item.sales_or_clicks || 0}x {isProd ? 'pembelian instan' : 'klik konsultasi WA'}
+                          {item.sales_or_clicks || 0}x{' '}
+                          {isProd ? 'pembelian instan' : 'klik konsultasi WA'}
                         </p>
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-1.5 flex-shrink-0">
+                    <div className="flex items-center justify-end gap-2 flex-shrink-0">
                       <button
                         onClick={() => handleEditClick(item)}
-                        className="rounded-lg border border-slate-200 p-2 text-slate-600 hover:bg-slate-100"
+                        className="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-3 py-1.5 sm:p-2 text-xs font-semibold text-slate-600 hover:bg-slate-100"
                         title="Edit"
                       >
                         <Edit3 className="h-4 w-4" />
+                        <span className="sm:hidden">Edit</span>
                       </button>
                       <button
                         onClick={() => onDeleteItem(item.id)}
-                        className="rounded-lg border border-rose-200 p-2 text-rose-600 hover:bg-rose-50"
+                        className="inline-flex items-center gap-1 rounded-lg border border-rose-200 px-3 py-1.5 sm:p-2 text-xs font-semibold text-rose-600 hover:bg-rose-50"
                         title="Hapus"
                       >
                         <Trash2 className="h-4 w-4" />
+                        <span className="sm:hidden">Hapus</span>
                       </button>
                     </div>
                   </div>
@@ -438,20 +456,23 @@ export default function DashboardPage({ items, profiles, orders, onSaveItem, onD
 
           {/* Riwayat Pembelian Produk Digital */}
           {creatorOrders.length > 0 && (
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm space-y-3">
+            <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm space-y-3">
               <h3 className="text-base font-extrabold text-slate-900">
                 Riwayat Checkout Produk Digital Terbaru
               </h3>
               <div className="divide-y divide-slate-100 text-xs">
                 {creatorOrders.map((ord) => (
-                  <div key={ord.id} className="py-2.5 flex items-center justify-between">
+                  <div
+                    key={ord.id}
+                    className="py-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-1.5"
+                  >
                     <div>
                       <span className="font-bold text-indigo-600">{ord.invoice_number}</span> —{' '}
                       <span className="font-semibold text-slate-800">{ord.buyer_name}</span> (
                       {ord.buyer_email})
                       <p className="text-slate-500">{ord.item_title}</p>
                     </div>
-                    <div className="text-right">
+                    <div className="sm:text-right flex sm:block items-center justify-between">
                       <span className="font-bold text-slate-900">{formatIDR(ord.amount)}</span>
                       <span className="block text-[10px] font-bold text-emerald-600">
                         LUNAS ({ord.payment_method})
