@@ -1,26 +1,27 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Download, MessageCircle, ArrowUpRight, Clock } from 'lucide-react';
+import { Download, MessageCircle, ArrowUpRight, Clock, Heart } from 'lucide-react';
 import { formatIDR } from '../lib/utils';
 
-export default function ItemCard({ item, creator }) {
+export default function ItemCard({ item, creator, isWishlisted = false, onToggleWishlist }) {
   const isProduct = item.item_type === 'product';
 
   return (
     <div className="group flex flex-col rounded-2xl border border-slate-200/90 bg-white overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200">
       {/* Thumbnail */}
-      <Link to={`/item/${item.id}`} className="relative h-48 overflow-hidden bg-slate-100">
-        <img
-          src={item.thumbnail_url}
-          alt={item.title}
-          className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
-        />
-        <div className="absolute top-3 left-3 flex items-center gap-1.5">
+      <div className="relative h-48 overflow-hidden bg-slate-100">
+        <Link to={`/item/${item.id}`} className="block h-full w-full">
+          <img
+            src={item.thumbnail_url}
+            alt={item.title}
+            className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
+          />
+        </Link>
+
+        <div className="absolute top-3 left-3 flex items-center gap-1.5 pointer-events-none">
           <span
             className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-bold shadow-sm backdrop-blur-md ${
-              isProduct
-                ? 'bg-indigo-600/95 text-white'
-                : 'bg-emerald-600/95 text-white'
+              isProduct ? 'bg-indigo-600/95 text-white' : 'bg-emerald-600/95 text-white'
             }`}
           >
             {isProduct ? (
@@ -34,10 +35,29 @@ export default function ItemCard({ item, creator }) {
             )}
           </span>
         </div>
-        <span className="absolute bottom-3 right-3 rounded-lg bg-slate-900/75 backdrop-blur-sm px-2.5 py-1 text-[11px] font-semibold text-white">
+
+        {onToggleWishlist && (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              onToggleWishlist(item.id);
+            }}
+            aria-label="Simpan ke Wishlist"
+            className={`absolute top-3 right-3 h-8 w-8 rounded-full flex items-center justify-center backdrop-blur-md shadow-sm transition ${
+              isWishlisted
+                ? 'bg-rose-500 text-white'
+                : 'bg-white/90 text-slate-600 hover:text-rose-500'
+            }`}
+          >
+            <Heart className={`h-4 w-4 ${isWishlisted ? 'fill-white' : ''}`} />
+          </button>
+        )}
+
+        <span className="absolute bottom-3 right-3 rounded-lg bg-slate-900/75 backdrop-blur-sm px-2.5 py-1 text-[11px] font-semibold text-white pointer-events-none">
           {item.category}
         </span>
-      </Link>
+      </div>
 
       {/* Content */}
       <div className="flex flex-1 flex-col p-5">
@@ -66,13 +86,13 @@ export default function ItemCard({ item, creator }) {
         {/* Info Tambahan Spesifik Tipe */}
         <div className="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
           {isProduct ? (
-            <span>📦 {item.file_info || 'Akses File Instan'}</span>
+            <span className="truncate">📦 {item.file_info || 'Akses File Instan'}</span>
           ) : (
             <span className="inline-flex items-center gap-1 text-emerald-700 font-medium">
               <Clock className="h-3 w-3" /> Estimasi {item.delivery_time || '3-5 Hari'}
             </span>
           )}
-          <span>{item.sales_or_clicks || 0}x diakses</span>
+          <span className="flex-shrink-0">{item.sales_or_clicks || 0}x diakses</span>
         </div>
 
         {/* Price & CTA */}

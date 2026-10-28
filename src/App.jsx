@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import BrandLogo from './components/BrandLogo';
 import HomePage from './pages/HomePage';
@@ -10,6 +10,19 @@ import BuyerDashboardPage from './pages/BuyerDashboardPage';
 import AdminDashboardPage from './pages/AdminDashboardPage';
 import AuthPage from './pages/AuthPage';
 import { INITIAL_ITEMS, INITIAL_PROFILES, INITIAL_ORDERS } from './data/mockData';
+
+// Guard Komponen: Wajib Login & Sesuai Role untuk Membuka Dashboard
+function RoleProtectedRoute({ currentUser, allowedRole, children }) {
+  if (!currentUser) {
+    return <Navigate to="/auth" replace />;
+  }
+  if (allowedRole && currentUser.role !== allowedRole) {
+    if (currentUser.role === 'admin') return <Navigate to="/admin" replace />;
+    if (currentUser.role === 'creator') return <Navigate to="/dashboard" replace />;
+    return <Navigate to="/library" replace />;
+  }
+  return children;
+}
 
 export default function App() {
   const [profiles, setProfiles] = useState(() => {
@@ -35,6 +48,11 @@ export default function App() {
   const [payouts, setPayouts] = useState(() => {
     const saved = localStorage.getItem('lapakdigi_payouts_v3');
     return saved ? JSON.parse(saved) : [];
+  });
+
+  const [wishlistIds, setWishlistIds] = useState(() => {
+    const saved = localStorage.getItem('lapakdigi_wishlist_v3');
+    return saved ? JSON.parse(saved) : ['item-1'];
   });
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -64,9 +82,26 @@ export default function App() {
     localStorage.setItem('lapakdigi_payouts_v3', JSON.stringify(payouts));
   }, [payouts]);
 
+  useEffect(() => {
+    localStorage.setItem('lapakdigi_wishlist_v3', JSON.stringify(wishlistIds));
+  }, [wishlistIds]);
+
   const handleRegisterProfile = (newProfile) => {
     setProfiles((prev) => [...prev, newProfile]);
     setCurrentUser(newProfile);
+  };
+
+  const handleUpdateProfile = (updatedProfile) => {
+    setProfiles((prev) =>
+      prev.map((p) => (p.id === updatedProfile.id ? updatedProfile : p))
+    );
+    setCurrentUser(updatedProfile);
+  };
+
+  const handleToggleWishlist = (itemId) => {
+    setWishlistIds((prev) =>
+      prev.includes(itemId) ? prev.filter((id) => id !== itemId) : [...prev, itemId]
+    );
   };
 
   const handleSaveItem = (newItem) => {
@@ -117,6 +152,7 @@ export default function App() {
           activeFilter={activeFilter}
           setActiveFilter={setActiveFilter}
           currentUser={currentUser}
+          wishlistCount={wishlistIds.length}
           onLogout={() => setCurrentUser(null)}
         />
 
@@ -128,6 +164,10 @@ export default function App() {
                 <HomePage
                   items={items}
                   profiles={profiles}
+                  currentUser={currentUser}
+                  orders={orders}
+                  wishlistIds={wishlistIds}
+                  onToggleWishlist={handleToggleWishlist}
                   searchQuery={searchQuery}
                   activeFilter={activeFilter}
                   setActiveFilter={setActiveFilter}
@@ -161,43 +201,60 @@ export default function App() {
                 />
               }
             />
+
+            {/* 1. Rute Khusus Pelanggan / Customer (Wajib Login sebagai Buyer) */}
             <Route
               path="/library"
               element={
-                <BuyerDashboardPage
-                  currentUser={currentUser}
-                  orders={orders}
-                  items={items}
-                  profiles={profiles}
-                  onCompleteEscrowOrder={handleCompleteEscrowOrder}
-                />
+                <RoleProtectedRoute currentUser={currentUser} allowedRole="buyer">
+                  <BuyerDashboardPage
+                    currentUser={currentUser}
+                    orders={orders}
+                    items={items}
+                    profiles={profiles}
+                    wishlistIds={wishlistIds}
+                    onToggleWishlist={handleToggleWishlist}
+                    onCompleteEscrowOrder={handleCompleteEscrowOrder}
+                    onUpdateProfile={handleUpdateProfile}
+                  />
+                </RoleProtectedRoute>
               }
             />
+
+            {/* 2. Rute Khusus Kreator / Penjual (Wajib Login sebagai Creator) */}
             <Route
               path="/dashboard"
               element={
-                <DashboardPage
-                  currentUser={currentUser}
-                  items={items}
-                  profiles={profiles}
-                  orders={orders}
-                  payouts={payouts}
-                  onSaveItem={handleSaveItem}
-                  onDeleteItem={handleDeleteItem}
-                  onRequestPayout={handleRequestPayout}
-                />
+                <RoleProtectedRoute currentUser={currentUser} allowedRole="creator">
+                  <DashboardPage
+                    currentUser={currentUser}
+                    items={items}
+                    profiles={profiles}
+                    orders={orders}
+                    payouts={payouts}
+                    onSaveItem={handleSaveItem}
+                    onDeleteItem={handleDeleteItem}
+                    onRequestPayout={handleRequestPayout}
+                    onUpdateProfile={handleUpdateProfile}
+                  />
+                </RoleProtectedRoute>
               }
             />
+
+            {/* 3. Rute Khusus Developer / Pemilik Platform (Wajib Login sebagai Admin) */}
             <Route
               path="/admin"
               element={
-                <AdminDashboardPage
-                  orders={orders}
-                  profiles={profiles}
-                  items={items}
-                  payouts={payouts}
-                  onApprovePayout={handleApprovePayout}
-                />
+                <RoleProtectedRoute currentUser={currentUser} allowedRole="admin">
+                  <AdminDashboardPage
+                    orders={orders}
+                    profiles={profiles}
+                    items={items}
+                    payouts={payouts}
+                    onApprovePayout={handleApprovePayout}
+                    onDeleteItem={handleDeleteItem}
+                  />
+                </RoleProtectedRoute>
               }
             />
           </Routes>

@@ -4,19 +4,31 @@ import {
   Sparkles,
   ShoppingBag,
   MessageCircle,
-  Zap,
-  Users,
   ShieldCheck,
   Calculator,
   ArrowRight,
   Star,
-  CheckCircle2,
   UserPlus,
+  FolderDown,
+  Heart,
+  Settings,
+  LayoutDashboard,
+  Code2,
 } from 'lucide-react';
 import ItemCard from '../components/ItemCard';
 import { formatIDR, calculateSplitPayment } from '../lib/utils';
 
-export default function HomePage({ items, profiles, searchQuery, activeFilter, setActiveFilter }) {
+export default function HomePage({
+  items,
+  profiles,
+  currentUser,
+  orders = [],
+  wishlistIds = [],
+  onToggleWishlist,
+  searchQuery,
+  activeFilter,
+  setActiveFilter,
+}) {
   const [simPrice, setSimPrice] = useState(500000);
   const [simQty, setSimQty] = useState(10);
 
@@ -36,9 +48,15 @@ export default function HomePage({ items, profiles, searchQuery, activeFilter, s
 
   const simSplit = calculateSplitPayment(simPrice * simQty);
 
+  const buyerOrdersCount = orders.filter(
+    (o) =>
+      o.buyer_id === currentUser?.id ||
+      o.buyer_email?.toLowerCase() === currentUser?.email?.toLowerCase()
+  ).length;
+
   return (
-    <div className="space-y-12 sm:space-y-16 pb-14">
-      {/* 1. HERO SECTION COMPACT + TRUST BAR */}
+    <div className="space-y-10 sm:space-y-14 pb-14">
+      {/* 1. HERO SECTION + TRUST BAR */}
       <section className="relative overflow-hidden bg-gradient-to-b from-indigo-950 via-slate-900 to-slate-900 text-white py-10 sm:py-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 relative z-10 text-center">
           <div className="inline-flex items-center gap-2 rounded-full bg-indigo-500/20 border border-indigo-400/30 px-3.5 py-1.5 text-[11px] sm:text-xs font-semibold text-indigo-200 mb-4">
@@ -109,7 +127,89 @@ export default function HomePage({ items, profiles, searchQuery, activeFilter, s
         </div>
       </section>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 space-y-14 sm:space-y-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 space-y-12 sm:space-y-16">
+        {/* PANEL PERSONALISASI MENYATU UNTUK USER YANG SUDAH LOGIN */}
+        {currentUser && (
+          <div className="rounded-2xl border border-indigo-200/80 bg-gradient-to-r from-indigo-50/90 via-white to-emerald-50/70 p-4 sm:p-5 shadow-sm flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+            <div className="flex items-center gap-3.5">
+              <img
+                src={currentUser.avatar_url}
+                alt={currentUser.full_name}
+                className="h-12 w-12 rounded-2xl object-cover border border-indigo-200"
+              />
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-extrabold text-slate-900">
+                    Halo, {currentUser.full_name}! 👋
+                  </span>
+                  <span className="rounded-md bg-indigo-600 px-2 py-0.5 text-[10px] font-bold uppercase text-white">
+                    {currentUser.role === 'admin'
+                      ? 'Developer (5%)'
+                      : currentUser.role === 'creator'
+                      ? 'Kreator (95%)'
+                      : 'Pelanggan Aktif'}
+                  </span>
+                </div>
+                <p className="text-xs text-slate-600 mt-0.5">
+                  {currentUser.role === 'buyer'
+                    ? `Jelajahi katalog di bawah atau akses cepat ${buyerOrdersCount} riwayat pembelian & pengaturan akun Anda.`
+                    : currentUser.role === 'creator'
+                    ? 'Pantau saldo bersih 95% Anda dan kelola produk/jasa di Studio Kreator.'
+                    : 'Pantau keuntungan komisi platform 5% dan aktivitas Escrow di Developer Console.'}
+                </p>
+              </div>
+            </div>
+
+            <div className="w-full lg:w-auto flex flex-wrap items-center gap-2">
+              {currentUser.role === 'buyer' && (
+                <>
+                  <Link
+                    to="/library"
+                    className="inline-flex items-center gap-1.5 rounded-xl bg-indigo-600 px-3.5 py-2 text-xs font-bold text-white hover:bg-indigo-700 transition"
+                  >
+                    <FolderDown className="h-3.5 w-3.5" />
+                    <span>Riwayat & Library ({buyerOrdersCount})</span>
+                  </Link>
+                  <Link
+                    to="/library?tab=wishlist"
+                    className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 transition"
+                  >
+                    <Heart className="h-3.5 w-3.5 text-rose-500" />
+                    <span>Wishlist ({wishlistIds.length})</span>
+                  </Link>
+                  <Link
+                    to="/library?tab=settings"
+                    className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 transition"
+                  >
+                    <Settings className="h-3.5 w-3.5 text-slate-500" />
+                    <span>Pengaturan Akun</span>
+                  </Link>
+                </>
+              )}
+
+              {currentUser.role === 'creator' && (
+                <Link
+                  to="/dashboard"
+                  className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-4 py-2.5 text-xs font-bold text-white hover:bg-emerald-700 transition"
+                >
+                  <LayoutDashboard className="h-4 w-4" />
+                  <span>Buka Studio Kreator (Dompet 95%)</span>
+                </Link>
+              )}
+
+              {currentUser.role === 'admin' && (
+                <Link
+                  to="/admin"
+                  className="inline-flex items-center gap-1.5 rounded-xl bg-amber-500 px-4 py-2.5 text-xs font-bold text-slate-950 hover:bg-amber-400 transition"
+                >
+                  <Code2 className="h-4 w-4" />
+                  <span>Buka Developer Console (Komisi 5%)</span>
+                </Link>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* 2. LANGSUNG MASUK KE KATALOG UTAMA (PRODUK DIGITAL & JASA FREELANCE) */}
         {(activeFilter === 'all' || activeFilter === 'product') && (
           <section className="space-y-5 sm:space-y-6">
@@ -134,7 +234,13 @@ export default function HomePage({ items, profiles, searchQuery, activeFilter, s
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
                 {popularProducts.map((item) => (
-                  <ItemCard key={item.id} item={item} creator={getCreator(item.creator_id)} />
+                  <ItemCard
+                    key={item.id}
+                    item={item}
+                    creator={getCreator(item.creator_id)}
+                    isWishlisted={wishlistIds.includes(item.id)}
+                    onToggleWishlist={onToggleWishlist}
+                  />
                 ))}
               </div>
             )}
@@ -164,7 +270,13 @@ export default function HomePage({ items, profiles, searchQuery, activeFilter, s
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
                 {bestServices.map((item) => (
-                  <ItemCard key={item.id} item={item} creator={getCreator(item.creator_id)} />
+                  <ItemCard
+                    key={item.id}
+                    item={item}
+                    creator={getCreator(item.creator_id)}
+                    isWishlisted={wishlistIds.includes(item.id)}
+                    onToggleWishlist={onToggleWishlist}
+                  />
                 ))}
               </div>
             )}
@@ -233,7 +345,8 @@ export default function HomePage({ items, profiles, searchQuery, activeFilter, s
                 <span>Monetisasi Karya & Keahlian Anda</span>
               </div>
               <h2 className="text-2xl sm:text-3xl font-extrabold leading-tight">
-                Mulai Jualan sebagai Kreator — Terima <span className="text-emerald-400">95% Pendapatan Bersih</span>!
+                Mulai Jualan sebagai Kreator — Terima{' '}
+                <span className="text-emerald-400">95% Pendapatan Bersih</span>!
               </h2>
               <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
                 Tidak ada biaya pendaftaran atau iuran bulanan. Lapak Digi hanya mengenakan biaya pemeliharaan platform & proteksi pembayaran sebesar <strong>5%</strong> dari setiap transaksi yang berhasil.
@@ -245,13 +358,13 @@ export default function HomePage({ items, profiles, searchQuery, activeFilter, s
                   className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-500 px-6 py-3.5 text-sm font-extrabold text-slate-950 hover:bg-emerald-400 transition shadow-lg shadow-emerald-500/20"
                 >
                   <UserPlus className="h-4 w-4" />
-                  <span>Daftar Akun Kreator / Pembeli</span>
+                  <span>Daftar / Masuk Akun Sekarang</span>
                 </Link>
                 <Link
                   to="/auth"
                   className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-700 bg-slate-800/70 px-5 py-3.5 text-xs sm:text-sm font-bold text-white hover:bg-slate-800 transition"
                 >
-                  <span>Coba Simulasi 3 Role (Pembeli, Kreator, Admin)</span>
+                  <span>Buka Dashboard Sesuai Role Anda</span>
                   <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>

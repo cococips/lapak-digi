@@ -443,3 +443,4 @@ export default function AuthPage({ profiles, currentUser, onLogin, onRegisterPro
     </div>
   );
 }
+
