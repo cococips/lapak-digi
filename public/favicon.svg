@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <defs>
+    <linearGradient id="ldGrad" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#4F46E5" />
+      <stop offset="55%" stop-color="#6366F1" />
+      <stop offset="100%" stop-color="#10B981" />
+    </linearGradient>
+    <linearGradient id="ldAccent" x1="12" y1="10" x2="38" y2="38" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="100%" stop-color="#E0E7FF" />
+    </linearGradient>
+  </defs>
+  <!-- Squircle Container -->
+  <rect width="48" height="48" rx="14" fill="url(#ldGrad)" />
+  <!-- Subtle inner border highlight -->
+  <rect x="1.5" y="1.5" width="45" height="45" rx="12.5" stroke="white" stroke-opacity="0.22" stroke-width="1.5" />
+  <!-- Geometric "L" Pillar + Storefront Base -->
+  <path d="M13 13C13 11.8954 13.8954 11 15 11H18.5C19.6046 11 20.5 11.8954 20.5 13V30.5H27.5C28.6046 30.5 29.5 31.3954 29.5 32.5V35C29.5 36.1046 28.6046 37 27.5 37H15C13.8954 37 13 36.1046 13 35V13Z" fill="url(#ldAccent)" />
+  <!-- Interlocking "D" Digital Curve & Pixel Node -->
+  <path d="M24 11H27.5C32.7467 11 37 15.2533 37 20.5C37 25.7467 32.7467 30 27.5 30H24V23.5H27.2C28.9673 23.5 30.4 22.0673 30.4 20.5C30.4 18.9327 28.9673 17.5 27.2 17.5H24V11Z" fill="white" fill-opacity="0.92" />
+  <!-- Digital Spark/Node Dot -->
+  <circle cx="34" cy="34" r="3" fill="#34D399" />
+</svg>
+
