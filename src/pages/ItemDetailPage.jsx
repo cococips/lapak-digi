@@ -11,17 +11,24 @@ import {
   FileArchive,
   Sparkles,
   UserCheck,
+  ShieldCheck,
 } from 'lucide-react';
 import { formatIDR, generateServiceWhatsAppUrl } from '../lib/utils';
 import CheckoutModal from '../components/CheckoutModal';
 
-export default function ItemDetailPage({ items, profiles, onRecordOrder, onIncrementMetric }) {
+export default function ItemDetailPage({
+  items,
+  profiles,
+  currentUser,
+  onRecordOrder,
+  onIncrementMetric,
+}) {
   const { id } = useParams();
   const item = items.find((i) => i.id === id);
   const creator = profiles.find((p) => p.id === item?.creator_id);
 
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
-  const [clientName, setClientName] = useState('');
+  const [clientName, setClientName] = useState(currentUser?.full_name || '');
   const [deadline, setDeadline] = useState('Minggu Ini (3-5 Hari)');
   const [projectBrief, setProjectBrief] = useState('');
   const actionPanelRef = useRef(null);
@@ -87,7 +94,9 @@ export default function ItemDetailPage({ items, profiles, onRecordOrder, onIncre
                   isProduct ? 'bg-indigo-100 text-indigo-700' : 'bg-emerald-100 text-emerald-700'
                 }`}
               >
-                {isProduct ? '📦 Produk Digital (Download Instan)' : '🤝 Jasa Freelance (1-on-1 via WA)'}
+                {isProduct
+                  ? '📦 Produk Digital (Download Instan)'
+                  : '🤝 Jasa Freelance (WA 1-on-1 + Garansi Escrow)'}
               </span>
               <span className="px-3 py-1 rounded-full text-[11px] sm:text-xs font-medium bg-slate-100 text-slate-700">
                 {item.category}
@@ -134,7 +143,7 @@ export default function ItemDetailPage({ items, profiles, onRecordOrder, onIncre
                 </div>
               </div>
               <span className="text-xs font-medium text-slate-500">
-                {item.sales_or_clicks || 0}x {isProduct ? 'Terjual' : 'Konsultasi WA'}
+                {item.sales_or_clicks || 0}x {isProduct ? 'Terjual' : 'Transaksi'}
               </span>
             </div>
 
@@ -169,7 +178,7 @@ export default function ItemDetailPage({ items, profiles, onRecordOrder, onIncre
                 )}
               </div>
             ) : (
-              <form onSubmit={handleServiceWhatsAppOrder} className="space-y-4">
+              <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-2.5">
                   <div className="rounded-xl bg-slate-50 p-3 border border-slate-200/70 flex items-center gap-2.5">
                     <Clock className="h-4 w-4 text-emerald-600 flex-shrink-0" />
@@ -187,49 +196,63 @@ export default function ItemDetailPage({ items, profiles, onRecordOrder, onIncre
                   </div>
                 </div>
 
-                <div className="rounded-xl bg-emerald-50/70 border border-emerald-200 p-3.5 space-y-3">
-                  <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-800">
-                    <Sparkles className="h-4 w-4 flex-shrink-0" />
-                    <span>Form Brief 1-on-1 (Terkirim ke WA Kreator)</span>
+                {/* Form Brief 1-on-1 */}
+                <form onSubmit={handleServiceWhatsAppOrder} className="space-y-3">
+                  <div className="rounded-xl bg-emerald-50/70 border border-emerald-200 p-3.5 space-y-3">
+                    <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-800">
+                      <Sparkles className="h-4 w-4 flex-shrink-0" />
+                      <span>Isi Brief Proyek (Untuk Diskusi WA & Booking Escrow)</span>
+                    </div>
+
+                    <input
+                      type="text"
+                      required
+                      placeholder="Nama Anda / Brand"
+                      value={clientName}
+                      onChange={(e) => setClientName(e.target.value)}
+                      className="w-full rounded-lg border border-emerald-200 bg-white px-3 py-2.5 text-base sm:text-xs focus:border-emerald-600 focus:outline-none"
+                    />
+
+                    <select
+                      value={deadline}
+                      onChange={(e) => setDeadline(e.target.value)}
+                      className="w-full rounded-lg border border-emerald-200 bg-white px-3 py-2.5 text-base sm:text-xs focus:border-emerald-600 focus:outline-none"
+                    >
+                      <option value="Segera / Urgent (1-3 Hari)">Target: Segera / Urgent (1-3 Hari)</option>
+                      <option value="Minggu Ini (3-5 Hari)">Target: Minggu Ini (3-5 Hari)</option>
+                      <option value="Bulan Ini / Fleksibel">Target: Bulan Ini / Fleksibel</option>
+                    </select>
+
+                    <textarea
+                      rows={3}
+                      required
+                      placeholder="Tuliskan kebutuhan proyek yang ingin didiskusikan..."
+                      value={projectBrief}
+                      onChange={(e) => setProjectBrief(e.target.value)}
+                      className="w-full rounded-lg border border-emerald-200 bg-white px-3 py-2.5 text-base sm:text-xs focus:border-emerald-600 focus:outline-none"
+                    />
                   </div>
 
-                  <input
-                    type="text"
-                    required
-                    placeholder="Nama Anda / Brand"
-                    value={clientName}
-                    onChange={(e) => setClientName(e.target.value)}
-                    className="w-full rounded-lg border border-emerald-200 bg-white px-3 py-2.5 text-base sm:text-xs focus:border-emerald-600 focus:outline-none"
-                  />
-
-                  <select
-                    value={deadline}
-                    onChange={(e) => setDeadline(e.target.value)}
-                    className="w-full rounded-lg border border-emerald-200 bg-white px-3 py-2.5 text-base sm:text-xs focus:border-emerald-600 focus:outline-none"
+                  {/* Tombol 1: Booking Escrow di Web (Potong 5% otomatis & dana dijamin) */}
+                  <button
+                    type="button"
+                    onClick={() => setIsCheckoutOpen(true)}
+                    className="w-full flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-5 py-3.5 sm:py-4 text-sm sm:text-base font-bold text-white shadow-lg shadow-emerald-600/25 hover:bg-emerald-700 transition"
                   >
-                    <option value="Segera / Urgent (1-3 Hari)">Target: Segera / Urgent (1-3 Hari)</option>
-                    <option value="Minggu Ini (3-5 Hari)">Target: Minggu Ini (3-5 Hari)</option>
-                    <option value="Bulan Ini / Fleksibel">Target: Bulan Ini / Fleksibel</option>
-                  </select>
+                    <ShieldCheck className="h-5 w-5" />
+                    <span>Booking & Bayar Jasa Aman (Garansi Escrow)</span>
+                  </button>
 
-                  <textarea
-                    rows={3}
-                    required
-                    placeholder="Tuliskan kebutuhan proyek yang ingin didiskusikan..."
-                    value={projectBrief}
-                    onChange={(e) => setProjectBrief(e.target.value)}
-                    className="w-full rounded-lg border border-emerald-200 bg-white px-3 py-2.5 text-base sm:text-xs focus:border-emerald-600 focus:outline-none"
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  className="w-full flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-5 py-3.5 sm:py-4 text-sm sm:text-base font-bold text-white shadow-lg shadow-emerald-600/25 hover:bg-emerald-700 transition"
-                >
-                  <MessageCircle className="h-5 w-5" />
-                  Pesan Jasa & Chat 1-on-1 di WhatsApp
-                </button>
-              </form>
+                  {/* Tombol 2: Diskusi 1-on-1 dulu di WhatsApp */}
+                  <button
+                    type="submit"
+                    className="w-full flex items-center justify-center gap-2 rounded-xl border-2 border-emerald-600 bg-white px-5 py-3 text-xs sm:text-sm font-bold text-emerald-700 hover:bg-emerald-50 transition"
+                  >
+                    <MessageCircle className="h-4 w-4" />
+                    <span>Tanya / Konsultasi 1-on-1 Dulu di WhatsApp</span>
+                  </button>
+                </form>
+              </div>
             )}
 
             {/* Info Kreator */}
@@ -257,7 +280,7 @@ export default function ItemDetailPage({ items, profiles, onRecordOrder, onIncre
         </div>
       </div>
 
-      {/* Mobile Floating Quick CTA Bar (Di atas Bottom Nav) */}
+      {/* Mobile Floating Quick CTA Bar */}
       <div className="lg:hidden fixed bottom-[56px] inset-x-0 z-30 border-t border-slate-200 bg-white/95 backdrop-blur-md px-4 py-2.5 flex items-center justify-between gap-3 shadow-lg">
         <div>
           <span className="block text-[10px] font-semibold uppercase text-slate-400">
@@ -270,26 +293,39 @@ export default function ItemDetailPage({ items, profiles, onRecordOrder, onIncre
           <button
             type="button"
             onClick={() => setIsCheckoutOpen(true)}
-            className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-xs font-bold text-white shadow-md shadow-indigo-600/25"
+            className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white shadow-md shadow-indigo-600/25"
           >
             <ShoppingBag className="h-4 w-4" />
             <span>{Number(item.price) === 0 ? 'Download Gratis' : 'Beli & Download Instan'}</span>
           </button>
         ) : (
-          <button
-            type="button"
-            onClick={scrollToActionPanel}
-            className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-2.5 text-xs font-bold text-white shadow-md shadow-emerald-600/25"
-          >
-            <MessageCircle className="h-4 w-4" />
-            <span>Isi Brief & Chat WA</span>
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={scrollToActionPanel}
+              className="inline-flex items-center gap-1 rounded-xl border border-emerald-600 bg-white px-3 py-2.5 text-xs font-bold text-emerald-700"
+            >
+              <MessageCircle className="h-4 w-4" />
+              <span>Chat WA</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setIsCheckoutOpen(true)}
+              className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-3.5 py-2.5 text-xs font-bold text-white shadow-md shadow-emerald-600/25"
+            >
+              <ShieldCheck className="h-4 w-4" />
+              <span>Booking Escrow</span>
+            </button>
+          </div>
         )}
       </div>
 
       <CheckoutModal
         item={item}
         creator={creator}
+        currentUser={currentUser}
+        initialBrief={projectBrief}
+        initialDeadline={deadline}
         isOpen={isCheckoutOpen}
         onClose={() => setIsCheckoutOpen(false)}
         onOrderSuccess={(order) => {

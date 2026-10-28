@@ -1,6 +1,8 @@
 export const INITIAL_PROFILES = [
   {
     id: 'creator-1',
+    role: 'creator',
+    email: 'raka@lapakdigi.id',
     full_name: 'Raka Pratama',
     username: 'rakadev',
     headline: 'Full-Stack Engineer & SaaS Maker',
@@ -8,9 +10,12 @@ export const INITIAL_PROFILES = [
     avatar_url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&auto=format&fit=crop&q=80',
     bio: 'Membangun template React modern, SaaS boilerplate siap pakai, dan menerima jasa pembuatan aplikasi web kustom untuk startup & UMKM.',
     location: 'Bandung, Indonesia',
+    bank_info: 'BCA • 8820192831 a/n Raka Pratama',
   },
   {
     id: 'creator-2',
+    role: 'creator',
+    email: 'nadia@lapakdigi.id',
     full_name: 'Nadia Larasati',
     username: 'nadiadesign',
     headline: 'UI/UX Designer & Notion Architect',
@@ -18,6 +23,31 @@ export const INITIAL_PROFILES = [
     avatar_url: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=300&auto=format&fit=crop&q=80',
     bio: 'Desainer produk digital dengan pengalaman 6+ tahun. Spesialis sistem desain Figma, template produktivitas Notion, dan rebranding visual.',
     location: 'Jakarta, Indonesia',
+    bank_info: 'Mandiri • 137002938172 a/n Nadia Larasati',
+  },
+  {
+    id: 'buyer-1',
+    role: 'buyer',
+    email: 'dimas.customer@gmail.com',
+    full_name: 'Dimas Anggara',
+    username: 'dimasbuyer',
+    headline: 'Founder UMKM & Pembeli Produk Digital',
+    whatsapp_number: '6281122334455',
+    avatar_url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&auto=format&fit=crop&q=80',
+    bio: 'Senang berbelanja source code siap pakai dan menyewa freelancer lokal untuk pengembangan bisnis.',
+    location: 'Surabaya, Indonesia',
+  },
+  {
+    id: 'admin-1',
+    role: 'admin',
+    email: 'founder@lapakdigi.id',
+    full_name: 'Developer Lapak Digi (Owner)',
+    username: 'adminplatform',
+    headline: 'Platform Owner & Escrow Administrator',
+    whatsapp_number: '6281100009999',
+    avatar_url: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=300&auto=format&fit=crop&q=80',
+    bio: 'Pengelola resmi ekosistem Lapak Digi. Mengawasi keamanan transaksi Escrow dan komisi layanan platform 5%.',
+    location: 'Indonesia',
   },
 ];
 
@@ -127,5 +157,68 @@ export const INITIAL_ITEMS = [
     revision_limit: 'Revisi Fleksibel',
     sales_or_clicks: 51,
     created_at: '2026-10-25T11:20:00Z',
+  },
+];
+
+// Data Transaksi Awal (Menampilkan bukti nyata potongan komisi 5% Developer vs 95% Kreator)
+export const INITIAL_ORDERS = [
+  {
+    id: 'ord-101',
+    invoice_number: 'INV-882910',
+    order_type: 'product_instant',
+    item_id: 'item-1',
+    item_title: 'IndoSaaS — React + Supabase Starter Kit',
+    item_type: 'product',
+    download_url: 'https://example.com/download/indosaas-starter-v2.zip',
+    creator_id: 'creator-1',
+    buyer_id: 'buyer-1',
+    buyer_name: 'Dimas Anggara',
+    buyer_email: 'dimas.customer@gmail.com',
+    amount: 249000,
+    platform_fee: 12450, // 5% untuk Developer
+    creator_net: 236550, // 95% untuk Kreator
+    payment_method: 'QRIS',
+    status: 'paid',
+    created_at: '2026-10-26T09:15:00Z',
+  },
+  {
+    id: 'ord-102',
+    invoice_number: 'ESC-994120',
+    order_type: 'service_escrow',
+    item_id: 'item-4',
+    item_title: 'Jasa Pembuatan Landing Page React & Tailwind (Terima Beres)',
+    item_type: 'service',
+    creator_id: 'creator-1',
+    buyer_id: 'buyer-1',
+    buyer_name: 'Dimas Anggara',
+    buyer_email: 'dimas.customer@gmail.com',
+    project_brief: 'Pembuatan landing page katalog kopi ekspor dengan fitur multi-bahasa.',
+    deadline: 'Minggu Ini (3-5 Hari)',
+    amount: 750000,
+    platform_fee: 37500, // 5% untuk Developer
+    creator_net: 712500, // 95% untuk Kreator
+    payment_method: 'VA_BCA',
+    status: 'paid',
+    escrow_status: 'in_progress', // 'in_progress' | 'completed'
+    created_at: '2026-10-27T14:20:00Z',
+  },
+  {
+    id: 'ord-103',
+    invoice_number: 'INV-773412',
+    order_type: 'product_instant',
+    item_id: 'item-3',
+    item_title: 'Nusantara UI — 120+ Komponen Figma Mobile & Web',
+    item_type: 'product',
+    download_url: 'https://example.com/download/nusantara-ui-kit.fig',
+    creator_id: 'creator-2',
+    buyer_id: 'buyer-1',
+    buyer_name: 'Dimas Anggara',
+    buyer_email: 'dimas.customer@gmail.com',
+    amount: 175000,
+    platform_fee: 8750, // 5% untuk Developer
+    creator_net: 166250, // 95% untuk Kreator
+    payment_method: 'GOPAY',
+    status: 'paid',
+    created_at: '2026-10-27T19:45:00Z',
   },
 ];

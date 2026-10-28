@@ -1,82 +1,60 @@
-# Lapak Digi — Creator Marketplace
+# Lapak Digi — Creator Marketplace (95% Kreator : 5% Platform)
 
-Marketplace produk digital instan (**In-App Checkout + Auto-Unlock File**) dan layanan jasa freelance (**1-on-1 Direct WhatsApp Consultation**) untuk kreator lokal Indonesia.
-
----
-
-## ✨ Daftar Fitur & Komponen UI di Dalam Web
-
-### 1. Identitas Visual & Navigasi Adaptif (`BrandLogo.jsx` & `Navbar.jsx`)
-- **Custom Geometric Brand Logo**: Monogram vektor SVG `"L + D"` dengan gradasi *Indigo* (Produk Digital) ke *Emerald* (Jasa Freelance) dan efek *ambient glow* saat *hover*.
-- **Desktop Sticky Navbar**: Dilengkapi *Real-time Search Bar* (dengan tombol hapus cepat), filter kategori instan (*Jelajahi Produk*, *Cari Jasa*), dan pintasan ke *Dashboard Kreator*.
-- **Mobile Navigation System (Responsive `< 768px`)**:
-  - **Expandable Mobile Search Bar**: Tombol kaca pembesar di *top bar* yang membuka input pencarian khusus layar HP tanpa membuat header penuh.
-  - **Mobile Drawer Menu**: Menu *dropdown* ringkas untuk navigasi cepat.
-  - **App-like Sticky Bottom Navigation Bar**: Bar navigasi bawah (*Beranda*, *Produk*, *Jasa WA*, *Dashboard*) yang nyaman dijangkau ibu jari saat dibuka di smartphone.
-
-### 2. Halaman Beranda & Eksplorasi Katalog (`HomePage.jsx` & `ItemCard.jsx`)
-- **Hero Section Interaktif**: Dilengkapi *Filter Pills* responsif untuk menyaring katalog secara *real-time* (*Semua Katalog*, *Produk Digital*, atau *Jasa Freelance*) dan kartu *Value Proposition*.
-- **Dual-Identity Item Cards (`ItemCard.jsx`)**:
-  - **Kartu Produk Digital (`product`)**: Menampilkan *badge* **Produk Instan** berwarna Indigo, info format/ukuran paket file (`ZIP / Figma / PDF`), jumlah akses, dan tombol **Beli Instan**.
-  - **Kartu Jasa Freelance (`service`)**: Menampilkan *badge* **Jasa 1-on-1 WA** berwarna Emerald, estimasi waktu pengerjaan (*3–5 Hari*), harga *"Mulai Dari"*, dan tombol **Pesan Jasa**.
-
-### 3. Halaman Detail Adaptif: Produk vs Jasa (`ItemDetailPage.jsx`)
-Tampilan panel transaksi di sisi kanan (dan *floating bar* di layar HP) otomatis menyesuaikan jenis item yang dibuka:
-- **Mode Produk Digital (`product`)**:
-  - Menampilkan detail ukuran/format paket file, daftar *deliverables*, tombol **Lihat Live Demo / Preview**, dan tombol utama **Beli Sekarang (Download Instan)** (atau **Klaim & Download Gratis** jika harga `Rp 0`).
-- **Mode Jasa Freelance (`service`)**:
-  - Menampilkan kartu **Estimasi Pengerjaan** & **Batas Revisi**.
-  - **Form Brief 1-on-1 Interaktif**: Input *Nama Klien/Brand*, *Pilihan Target Deadline*, dan *Deskripsi Kebutuhan Proyek* yang otomatis dirangkai menjadi pesan WhatsApp rapi ketika tombol **Pesan Jasa & Chat 1-on-1 di WhatsApp** ditekan.
-- **Mobile Floating Quick CTA Bar**: Bar melayang di bagian bawah layar HP yang menampilkan harga beserta tombol aksi cepat (*Beli Instan* atau *Isi Brief & Chat WA*).
-
-### 4. Modal Checkout Instan & Auto-Unlock File (`CheckoutModal.jsx`)
-- **Responsive Bottom-Sheet di Mobile & Centered Modal di Desktop**: Muncul mulus dari bawah layar pada HP.
-- **Pilihan Pembayaran Instan**: Mendukung simulasi pembayaran **QRIS Instan**, **GoPay / DANA**, **Virtual Account (BCA/Mandiri)**, serta klaim langsung untuk **Produk Gratis (`Freebie`)**.
-- **Instant File Unlock & Invoice**: Begitu pembayaran dikonfirmasi, modal otomatis berubah menjadi halaman bukti lunas (`INV-XXXXXX`) dan membuka kunci tombol **Download File Sekarang**.
-
-### 5. Halaman Portofolio Publik Kreator (`CreatorProfilePage.jsx`)
-- **Bio-Link Ready (`/creator/:username`)**: Menampilkan foto profil, nama, *handle* `@username`, spesialisasi (*headline*), lokasi, dan jumlah karya aktif.
-- **Tombol Bagikan Link Lapak**: Menyalin URL profil kreator ke *clipboard* dalam 1 klik dengan indikator status *"Link Lapak Tersalin!"*.
-- **Horizontal Scrollable Portfolio Tabs**: Tab filter karya kreator (*Semua*, *Produk Digital*, *Jasa Freelance*) yang bisa digeser ke samping pada layar HP.
-
-### 6. Workspace & CRUD Dashboard Kreator (`DashboardPage.jsx`)
-- **Account Switcher Simulasi**: Memungkinkan pengujian dashboard dari sudut pandang beberapa kreator berbeda.
-- **Kartu Analitik Real-time**: Menampilkan *Total Karya & Jasa Aktif*, *Total Interaksi (Download & Klik WA)*, serta *Jumlah Invoice Lunas*.
-- **Form CRUD Dinamis (Tambah & Edit Item)**: Input form otomatis berubah mengikuti pilihan tipe item (*Pengaturan File Download & Demo* untuk Produk Digital, atau *Estimasi Pengerjaan & Batas Revisi* untuk Jasa Freelance).
-- **Manajemen Katalog & Tabel Riwayat Order**: Edit atau hapus item secara instan (tersimpan di `localStorage`) serta pantau daftar pembeli produk digital beserta metode pembayarannya.
+Marketplace hibrida untuk kreator lokal Indonesia yang memadukan **Produk Digital Instan (Auto-Unlock File)** dan **Jasa Freelance 1-on-1 (Konsultasi WhatsApp + Booking Escrow Aman)** dengan sistem bagi hasil otomatis **95% untuk Kreator** dan **5% untuk Developer Pemilik Platform**.
 
 ---
 
-## 🚀 Cara Menjalankan Web Ini di Laptop (Lokal)
+## 👥 Arsitektur 3 Peran Pengguna (3-Role Ecosystem)
 
-1. Buka terminal di folder proyek `d:\Workspace\web-projects\Lapak_Digi`.
-2. Instal paket (hanya perlu sekali di awal):
-   ```powershell
-   npm install
-   ```
-3. Jalankan server pengembangan lokal:
-   ```powershell
-   npm run dev
-   ```
-4. Buka di browser: **http://localhost:5173/**
+1. **Pelanggan / Customer (`/library` — Library Pembeli & Escrow)**
+   - Membeli produk digital dan mengunduh ulang file kapan saja dari halaman **Library Pembeli**.
+   - Melakukan konsultasi 1-on-1 via WhatsApp dengan kreator dan membayar jasa melalui **Booking Escrow Lapak Digi** (dana dijamin aman dan baru cair ke kreator setelah pembeli menekan tombol *Konfirmasi Jasa Selesai*).
+2. **Kreator / Freelancer (`/dashboard` — Studio Kreator & Dompet 95%)**
+   - Membuka lapak gratis tanpa biaya bulanan, menambah/mengedit/menghapus **Produk Digital** maupun **Jasa Freelance**.
+   - Memantau **Saldo Bersih Siap Tarik (95%)**, rincian potongan komisi platform 5%, serta mengajukan **Penarikan Saldo (Withdraw/Payout)** ke rekening bank.
+3. **Developer / Pemilik Platform (`/admin` — Revenue Center Komisi 5%)**
+   - Halaman khusus pengelola platform untuk memantau **Total Keuntungan Developer (Komisi 5%)**, **Total Perputaran Uang (GMV 100%)**, **Alokasi Hak Kreator (95%)**, buku besar *Auto-Split Payment*, dan menyetujui pencairan dana kreator (*Approve Payouts*).
 
 ---
 
-## 📱 Cara Membuka di HP (Satu Jaringan Wi-Fi)
+## ✨ Daftar Fitur & Komponen UI Lengkap
 
+### 1. Identitas Visual & Navigasi 3-Role (`BrandLogo.jsx` & `Navbar.jsx`)
+- **Custom Geometric Brand Logo**: Monogram vektor SVG `"L + D"` dengan gradasi *Indigo* (Produk Digital) ke *Emerald* (Jasa Freelance).
+- **Role-Aware Desktop & Mobile Navigation**: Pintasan langsung ke **Library Pembeli (`/library`)**, **Studio Kreator (`/dashboard`)**, **Developer 5% (`/admin`)**, dan halaman **Masuk / Daftar (`/auth`)**.
+- **Mobile Bottom Navigation Bar**: 5 tab ibu jari di bagian bawah layar HP (*Katalog*, *Pembeli*, *Kreator*, *Dev 5%*, *Akun*).
+
+### 2. Halaman Beranda Konversi Tinggi (`HomePage.jsx`)
+- **Hero Section + Statistik Kepercayaan**: Menampilkan nilai utama (*100% Instan*, *Bagi Hasil 95%:5%*, *Garansi Escrow*).
+- **Katalog Langsung di Atas**: Pengunjung langsung disambut oleh **Produk Digital Populer** dan **Jasa Freelance Terbaik** beserta filter pencarian *real-time*.
+- **Edukasi Cara Kerja & Proteksi Escrow**: Penjelasan 3 langkah transaksi aman bagi Pembeli dan Kreator.
+- **Kalkulator Interaktif Pendapatan Kreator (95% vs 5%)**: Slider simulasi omzet bulanan yang menghitung otomatis potongan komisi 5% platform dan 95% pendapatan bersih kreator.
+- **Testimoni Pengguna & Kreator Lokal**: Bukti sosial (*social proof*) dari pembeli dan freelancer.
+
+### 3. Halaman Pendaftaran & Simulasi 3 Role (`AuthPage.jsx`)
+- **Pilihan Pendaftaran Peran**: Pengguna baru dapat mendaftar secara spesifik sebagai **Pembeli / Customer** atau **Kreator / Freelancer**.
+- **1-Klik Demo Role Switcher**: Fitur masuk instan sebagai *Akun Pembeli*, *Akun Kreator (95%)*, atau *Akun Developer Platform (5%)* untuk menguji seluruh alur aplikasi dengan mudah.
+
+### 4. Halaman Detail & Transaksi Hibrida (`ItemDetailPage.jsx` & `CheckoutModal.jsx`)
+- **Untuk Produk Digital (`product`)**: Pembayaran instan via QRIS/GoPay/Virtual Account yang langsung membuka kunci tombol **Download File** dan membagi 95% ke Kreator & 5% ke Developer.
+- **Untuk Jasa Freelance (`service`)**:
+  - **Form Brief 1-on-1**: Input nama klien, target deadline, dan deskripsi proyek.
+  - **Tombol Booking & Bayar Jasa Aman (Garansi Escrow)**: Membayar jasa di dalam web (potong 5% otomatis untuk Developer & 95% ditahan untuk Kreator) serta menghasilkan **Kode Booking Resmi (`#ESC-XXXXXX`)** yang bisa langsung dikirim ke WhatsApp kreator.
+  - **Tombol Tanya / Konsultasi 1-on-1 Dulu di WhatsApp**: Mengarahkan klien untuk berdiskusi langsung di WhatsApp sebelum atau sesudah booking.
+
+---
+
+## 🚀 Cara Menjalankan & Mengupdate Proyek
+
+### Menjalankan di Laptop (Lokal)
 ```powershell
-npm run dev -- --host
+npm run dev
 ```
-Buka alamat **`Network: http://192.168.x.x:5173/`** yang muncul di terminal pada browser HP kamu.
+Buka **http://localhost:5173/** di browser.
 
----
-
-## 🌐 Cara Deploy & Update ke GitHub + Vercel
-
-Setiap kali ada perubahan kode yang ingin di-*update* ke website Vercel kamu:
+### Mengirim Update ke GitHub & Vercel
 ```powershell
 git add .
 git commit -m "update fitur"
 git push origin main
 ```
-Vercel akan otomatis mendeteksi *push* terbaru di GitHub dan memperbarui website publikmu dalam ~30 detik!
